@@ -4,6 +4,7 @@
 name: Build
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
@@ -22,7 +23,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
     - run: |
             cd simple-mind-map
             npm i
@@ -32,8 +32,7 @@ jobs:
             npm i
             npm link simple-mind-map
             npm run build
-  # npm test
-    
+
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
