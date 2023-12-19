@@ -32,9 +32,13 @@ jobs:
             npm i
             npm link simple-mind-map
             npm run build
+            find $PWD -maxdepth 1 | xargs ls -ld
+            cd ..
+            find $PWD -maxdepth 1 | xargs ls -ld
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: MyIP.zip
-        path: web/dist
+
+    # - name: Upload a Build Artifact
+    #   uses: actions/upload-artifact@v3.1.2
+    #   with:
+    #     name: MyIP.zip
+    #     path: web/dist
