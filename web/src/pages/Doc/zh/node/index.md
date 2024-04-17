@@ -56,6 +56,24 @@
 
 ## 方法
 
+### getAncestorNodes()
+
+> v0.9.9+
+
+获取祖先节点实例列表。
+
+### highlight()
+
+> v0.9.8+
+
+高亮节点。
+
+### closeHighlight()
+
+> v0.9.8+
+
+取消高亮节点。
+
 ### getPureData(removeActiveState = true, removeId = false)
 
 > v0.9.0+
@@ -214,11 +232,11 @@
 
 ### setData(data)
 
-设置节点数据，`SET_NODE_DATA`命令的快捷方法
+设置节点数据，`SET_NODE_DATA`命令的快捷方法，这个方法和命令不会更新视图，所以如果你要修改文本，就使用`setText`方法，或者用手指文本的命令。
 
 ### setText(text, richText, resetRichText)
 
-- `richText`：v0.4.2+，`Boolean`，如果要设置的是富文本内容，也就是`html`字符，`richText`需要传`true`
+- `richText`：v0.4.2+，`Boolean`，如果要设置的是富文本内容，也就是`html`字符，`richText`需要传`true`。在v0.9.3+版本后该参数不传会默认使用之前的值。
 
 - `resetRichText`：v0.6.10+，`Boolean`，是否要复位富文本，默认为`false`，如果传`true`那么会重置富文本节点的样式
 
@@ -239,6 +257,16 @@
 ### setNote(note)
 
 设置节点备注，`SET_NODE_NOTE`命令的快捷方法
+
+### setAttachment(url, name)
+
+> v0.9.10+
+
+- `url`：附件的url；
+
+- `name`：附件的名称，可选
+
+设置节点附件，`SET_NODE_ATTACHMENT`命令的快捷方法
 
 ### setTag(tag)
 

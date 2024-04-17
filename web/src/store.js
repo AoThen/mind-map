@@ -17,12 +17,17 @@ const store = new Vuex.Store({
       // 鼠标行为
       useLeftKeySelectionRightKeyDrag: false,
       // 是否显示滚动条
-      isShowScrollbar: false
+      isShowScrollbar: false,
+      // 是否开启手绘风格
+      isUseHandDrawnLikeStyle: false,
+      // 是否是暗黑模式
+      isDark: false, 
     },
     activeSidebar: '', // 当前显示的侧边栏
-    isDark: false, // 是否是暗黑模式
     isOutlineEdit: false, // 是否是大纲编辑模式
-    isReadonly: false // 是否只读
+    isReadonly: false, // 是否只读
+    isSourceCodeEdit: false, // 是否是源码编辑模式
+    extraTextOnExport: ''// 导出时底部添加的文字
   },
   mutations: {
     // 设置思维导图数据
@@ -49,11 +54,6 @@ const store = new Vuex.Store({
       state.activeSidebar = data
     },
 
-    // 设置暗黑模式
-    setIsDark(state, data) {
-      state.isDark = data
-    },
-
     // 设置大纲编辑模式
     setIsOutlineEdit(state, data) {
       state.isOutlineEdit = data
@@ -62,6 +62,16 @@ const store = new Vuex.Store({
     // 设置是否只读
     setIsReadonly(state, data) {
       state.isReadonly = data
+    },
+
+    // 设置源码编辑模式
+    setIsSourceCodeEdit(state, data) {
+      state.isSourceCodeEdit = data
+    },
+
+    // 设置导出时底部添加的文字
+    setExtraTextOnExport(state, data) {
+      state.extraTextOnExport = data
     }
   },
   actions: {

@@ -8,10 +8,12 @@
     <el-upload
       ref="upload"
       action="x"
+      accept=".smm,.json,.xmind,.xlsx,.md"
       :file-list="fileList"
       :auto-upload="false"
       :multiple="false"
       :on-change="onChange"
+      :on-remove="onRemove"
       :limit="1"
       :on-exceed="onExceed"
     >
@@ -36,6 +38,7 @@ import xmind from 'simple-mind-map/src/parse/xmind.js'
 import markdown from 'simple-mind-map/src/parse/markdown.js'
 import { fileToBuffer } from '@/utils'
 import { read, utils } from 'xlsx'
+import { mapMutations } from 'vuex'
 
 /**
  * @Author: 王林
@@ -60,12 +63,16 @@ export default {
   created() {
     this.$bus.$on('showImport', this.handleShowImport)
     this.$bus.$on('handle_file_url', this.handleFileURL)
+    this.$bus.$on('importFile', this.handleImportFile)
   },
   beforeDestroy() {
     this.$bus.$off('showImport', this.handleShowImport)
     this.$bus.$off('handle_file_url', this.handleFileURL)
+    this.$bus.$off('importFile', this.handleImportFile)
   },
   methods: {
+    ...mapMutations(['setActiveSidebar']),
+
     handleShowImport() {
       this.dialogVisible = true
     },
@@ -114,6 +121,11 @@ export default {
       }
     },
 
+    // 移除文件
+    onRemove(file, fileList) {
+      this.fileList = fileList
+    },
+
     /**
      * @Author: 王林
      * @Date: 2021-08-03 22:48:47
@@ -153,6 +165,7 @@ export default {
         this.handleMd(file)
       }
       this.cancel()
+      this.setActiveSidebar(null)
     },
 
     /**
@@ -275,6 +288,16 @@ export default {
           this.$message.error(this.$t('import.fileParsingFailed'))
         }
       }
+    },
+
+    // 导入指定文件
+    handleImportFile(file) {
+      this.onChange({
+        raw: file,
+        name: file.name
+      })
+      if (this.fileList.length <= 0) return
+      this.confirm()
     }
   }
 }

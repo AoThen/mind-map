@@ -75,6 +75,7 @@ class Node {
     this._noteData = null
     this.noteEl = null
     this.noteContentIsShow = false
+    this._attachmentData = null
     this._expandBtn = null
     this._lastExpandBtnType = null
     this._showExpandBtn = false
@@ -165,6 +166,11 @@ class Node {
     this.top = 0
   }
 
+  // 节点被删除时需要复位的数据
+  resetWhenDelete() {
+    this._isMouseenter = false
+  }
+
   //  处理数据
   handleData(data) {
     data.data.expand = data.data.expand === false ? false : true
@@ -182,7 +188,10 @@ class Node {
     }
     // 如果没有返回内容，那么还是使用内置的节点内容
     if (this._customNodeContent) {
-      this._customNodeContent.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml')
+      this._customNodeContent.setAttribute(
+        'xmlns',
+        'http://www.w3.org/1999/xhtml'
+      )
       return
     }
     this._imgData = this.createImgNode()
@@ -191,10 +200,13 @@ class Node {
     this._hyperlinkData = this.createHyperlinkNode()
     this._tagData = this.createTagNode()
     this._noteData = this.createNoteNode()
+    this._attachmentData = this.createAttachmentNode()
   }
 
   //  计算节点的宽高
   getSize() {
+    this.customLeft = this.getData('customLeft') || undefined
+    this.customTop = this.getData('customTop') || undefined
     this.updateGeneralization()
     this.createNodeData()
     let { width, height } = this.getNodeRect()
@@ -256,6 +268,11 @@ class Node {
     if (this._noteData) {
       textContentWidth += this._noteData.width
       textContentHeight = Math.max(textContentHeight, this._noteData.height)
+    }
+    // 附件
+    if (this._attachmentData) {
+      textContentWidth += this._attachmentData.width
+      textContentHeight = Math.max(textContentHeight, this._attachmentData.height)
     }
     // 文字内容部分的尺寸
     this._rectInfo.textContentWidth = textContentWidth
@@ -352,7 +369,10 @@ class Node {
     // 文字
     if (this._textData) {
       this._textData.node.attr('data-offsetx', textContentOffsetX)
-      this._textData.node.x(textContentOffsetX).y(0)
+      // 修复safari浏览器节点存在图标时文字位置不正确的问题
+      ;(this._textData.nodeContent || this._textData.node)
+        .x(textContentOffsetX)
+        .y(0)
       textContentNested.add(this._textData.node)
       textContentOffsetX += this._textData.width + textContentItemMargin
     }
@@ -386,6 +406,14 @@ class Node {
       textContentNested.add(this._noteData.node)
       textContentOffsetX += this._noteData.width
     }
+    // 附件
+    if (this._attachmentData) {
+      this._attachmentData.node
+        .x(textContentOffsetX)
+        .y((this._rectInfo.textContentHeight - this._attachmentData.height) / 2)
+      textContentNested.add(this._attachmentData.node)
+      textContentOffsetX += this._attachmentData.width
+    }
     // 文字内容整体
     textContentNested.translate(
       width / 2 - textContentNested.bbox().width / 2,
@@ -407,6 +435,12 @@ class Node {
       if (this.isMultipleChoice) {
         e.stopPropagation()
         this.isMultipleChoice = false
+        return
+      }
+      if (
+        this.mindMap.opt.onlyOneEnableActiveNodeOnCooperate &&
+        this.userList.length > 0
+      ) {
         return
       }
       this.active(e)
@@ -475,16 +509,20 @@ class Node {
     })
     // 双击事件
     this.group.on('dblclick', e => {
-      if (this.mindMap.opt.readonly || e.ctrlKey) {
+      const { readonly, onlyOneEnableActiveNodeOnCooperate } = this.mindMap.opt
+      if (readonly || e.ctrlKey) {
         return
       }
       e.stopPropagation()
+      if (onlyOneEnableActiveNodeOnCooperate && this.userList.length > 0) {
+        return
+      }
       this.mindMap.emit('node_dblclick', this, e)
     })
     // 右键菜单事件
     this.group.on('contextmenu', e => {
       const { readonly, useLeftKeySelectionRightKeyDrag } = this.mindMap.opt
-      // 按住ctrl键点击鼠标左键不知为何触发的是contextmenu事件
+      // Mac上按住ctrl键点击鼠标左键不知为何触发的是contextmenu事件
       if (readonly || e.ctrlKey) {
         return
       }
@@ -694,6 +732,10 @@ class Node {
   // 销毁节点，不但会从画布删除，而且原节点直接置空，后续无法再插回画布
   destroy() {
     if (!this.group) return
+    if (this.emptyUser) {
+      this.emptyUser()
+    }
+    this.resetWhenDelete()
     this.group.remove()
     this.removeGeneralization()
     this.removeLine()
@@ -701,6 +743,7 @@ class Node {
     if (this.parent) {
       this.parent.removeLine()
     }
+    this.style.onRemove()
   }
 
   //  隐藏节点
@@ -825,9 +868,9 @@ class Node {
     this.renderer.layout.renderLine(
       this,
       this._lines,
-      (line, node) => {
+      (...args) => {
         // 添加样式
-        this.styleLine(line, node)
+        this.styleLine(...args)
       },
       this.style.getStyle('lineStyle', true)
     )
@@ -882,19 +925,34 @@ class Node {
   }
 
   //  设置连线样式
-  styleLine(line, node) {
-    let width =
-      node.getSelfInhertStyle('lineWidth') || node.getStyle('lineWidth', true)
-    let color =
-      node.getSelfInhertStyle('lineColor') || node.getStyle('lineColor', true)
-    let dasharray =
-      node.getSelfInhertStyle('lineDasharray') ||
-      node.getStyle('lineDasharray', true)
-    this.style.line(line, {
-      width,
-      color,
-      dasharray
-    })
+  styleLine(line, childNode, enableMarker) {
+    const width =
+      childNode.getSelfInhertStyle('lineWidth') ||
+      childNode.getStyle('lineWidth', true)
+    const color =
+      childNode.getSelfInhertStyle('lineColor') ||
+      this.getRainbowLineColor(childNode) ||
+      childNode.getStyle('lineColor', true)
+    const dasharray =
+      childNode.getSelfInhertStyle('lineDasharray') ||
+      childNode.getStyle('lineDasharray', true)
+    this.style.line(
+      line,
+      {
+        width,
+        color,
+        dasharray
+      },
+      enableMarker,
+      childNode
+    )
+  }
+
+  // 获取彩虹线条颜色
+  getRainbowLineColor(node) {
+    return this.mindMap.rainbowLines
+      ? this.mindMap.rainbowLines.getNodeColor(node)
+      : ''
   }
 
   //  移除连线
@@ -1004,6 +1062,17 @@ class Node {
     return copyNodeTree({}, this, removeActiveState, removeId)
   }
 
+  // 获取祖先节点列表
+  getAncestorNodes() {
+    const list = []
+    let parent = this.parent
+    while (parent) {
+      list.unshift(parent)
+      parent = parent.parent
+    }
+    return list
+  }
+
   // 是否存在自定义样式
   hasCustomStyle() {
     return this.style.hasCustomStyle()
@@ -1031,6 +1100,16 @@ class Node {
       width: width * scaleX,
       height: height * scaleY
     }
+  }
+
+  // 高亮节点
+  highlight() {
+    if (this.group) this.group.addClass('smm-node-highlight')
+  }
+
+  // 取消高亮节点
+  closeHighlight() {
+    if (this.group) this.group.removeClass('smm-node-highlight')
   }
 }
 

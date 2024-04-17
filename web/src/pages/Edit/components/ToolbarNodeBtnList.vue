@@ -156,6 +156,17 @@
         <span class="icon iconfont icongongshi"></span>
         <span class="text">{{ $t('toolbar.formula') }}</span>
       </div>
+      <div
+        v-if="item === 'attachment'"
+        class="toolbarBtn"
+        :class="{
+          disabled: activeNodes.length <= 0 || hasGeneralization
+        }"
+        @click="selectAttachmentFile"
+      >
+        <span class="icon iconfont iconfujian"></span>
+        <span class="text">{{ $t('toolbar.attachment') }}</span>
+      </div>
     </template>
   </div>
 </template>
@@ -179,7 +190,7 @@ export default {
   data() {
     return {
       activeNodes: [],
-      backEnd: false,
+      backEnd: true,
       forwardEnd: true,
       readonly: false,
       isFullDataFile: false,
@@ -188,7 +199,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isDark']),
+    ...mapState({
+      isDark: state => state.localConfig.isDark
+    }),
     hasRoot() {
       return (
         this.activeNodes.findIndex(node => {
@@ -256,6 +269,11 @@ export default {
     // 打开公式侧边栏
     showFormula() {
       this.setActiveSidebar('formulaSidebar')
+    },
+
+    // 选择附件
+    selectAttachmentFile() {
+      this.$bus.$emit('selectAttachment', this.activeNodes)
     }
   }
 }

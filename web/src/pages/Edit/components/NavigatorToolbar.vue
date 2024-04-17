@@ -16,6 +16,15 @@
       </el-select>
     </div>
     <div class="item">
+      <el-tooltip
+        effect="dark"
+        :content="$t('navigatorToolbar.backToRoot')"
+        placement="top"
+      >
+        <div class="btn iconfont icondingwei" @click="backToRoot"></div>
+      </el-tooltip>
+    </div>
+    <div class="item">
       <div class="btn iconfont iconsousuo" @click="showSearch"></div>
     </div>
     <div class="item">
@@ -72,6 +81,15 @@
       ></div>
     </div>
     <div class="item">
+      <el-tooltip
+        effect="dark"
+        :content="$t('navigatorToolbar.changeSourceCodeEdit')"
+        placement="top"
+      >
+        <div class="btn iconfont iconyuanma" @click="openSourceCodeEdit"></div>
+      </el-tooltip>
+    </div>
+    <div class="item">
       <el-dropdown @command="handleCommand">
         <div class="btn iconfont iconbangzhu"></div>
         <el-dropdown-menu slot="dropdown">
@@ -123,13 +141,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isDark', 'isReadonly'])
+    ...mapState({
+      isReadonly: state => state.isReadonly,
+      isDark: state => state.localConfig.isDark
+    })
   },
   created() {
     this.lang = getLang()
   },
   methods: {
-    ...mapMutations(['setIsDark', 'setIsReadonly']),
+    ...mapMutations(['setLocalConfig', 'setIsReadonly', 'setIsSourceCodeEdit']),
 
     readonlyChange() {
       this.setIsReadonly(!this.isReadonly)
@@ -152,7 +173,9 @@ export default {
     },
 
     toggleDark() {
-      this.setIsDark(!this.isDark)
+      this.setLocalConfig({
+        isDark: !this.isDark
+      })
     },
 
     handleCommand(command) {
@@ -180,6 +203,14 @@ export default {
       a.href = url
       a.target = '_blank'
       a.click()
+    },
+
+    backToRoot() {
+      this.mindMap.renderer.setRootNodeCenter()
+    },
+
+    openSourceCodeEdit() {
+      this.setIsSourceCodeEdit(true)
     }
   }
 }

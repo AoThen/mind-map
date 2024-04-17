@@ -35,9 +35,9 @@
 </tr>
 <tr>
 <td>data</td>
-<td>Object</td>
-<td>{}</td>
-<td>思维导图数据，可参考下方【数据结构】介绍</td>
+<td>Object 、 null</td>
+<td></td>
+<td>思维导图数据，可参考下方【数据结构】介绍。v0.9.9+支持传空对象或者null，画布会显示空白</td>
 </tr>
 <tr>
 <td>layout</td>
@@ -252,7 +252,7 @@
 <tr>
 <td>maxHistoryCount（v0.5.6+）</td>
 <td>Number</td>
-<td>1000</td>
+<td>1000（v0.9.2+改为500）</td>
 <td>最大历史记录数</td>
 </tr>
 <tr>
@@ -513,6 +513,78 @@
 <td></td>
 <td>图片地址，当节点图片加载失败时显示的默认图片</td>
 </tr>
+<tr>
+<td>handleNodePasteImg（v0.9.2+）</td>
+<td>null 或 Function</td>
+<td>null</td>
+<td>在节点上粘贴剪贴板中的图片的处理方法，默认是转换为data:url数据插入到节点中，你可以通过该方法来将图片数据上传到服务器，实现保存图片的url。可以传递一个异步方法，接收Blob类型的图片数据，需要返回指定结构：{ url, size: {width, height} }</td>
+</tr>
+<tr>
+<td>isLimitMindMapInCanvas（v0.9.2+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>是否将思维导图限制在画布内。比如向右拖动时，思维导图图形的最左侧到达画布中心时将无法继续向右拖动，其他同理</td>
+</tr>
+<tr>
+<td>isLimitMindMapInCanvasWhenHasScrollbar（v0.9.2+）</td>
+<td>Boolean</td>
+<td>true</td>
+<td>当注册了滚动条插件（Scrollbar）时，是否将思维导图限制在画布内，isLimitMindMapInCanvas配置不再起作用</td>
+</tr>
+<tr>
+<td>associativeLineInitPointsPosition（v0.9.5+）</td>
+<td>null / { from, to }</td>
+<td>{ from: '', to: '' }</td>
+<td>默认情况下，新创建的关联线两个端点的位置是根据两个节点中心点的相对位置来计算的，如果你想固定位置，可以通过这个选项来配置。from和to都不传，则都自动计算，如果只传一个，另一个则会自动计算。from和to可选值：left、top、bottom、right</td>
+</tr>
+<tr>
+<td>enableAdjustAssociativeLinePoints（v0.9.5+）</td>
+<td>Boolean</td>
+<td>true</td>
+<td>是否允许调整关联线两个端点的位置</td>
+</tr>
+<tr>
+<td>isOnlySearchCurrentRenderNodes（v0.9.8+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>是否仅搜索当前渲染的节点，被收起的节点不会被搜索到</td>
+</tr>
+<tr>
+<td>onlyOneEnableActiveNodeOnCooperate（v0.9.8+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>协同编辑时，同一个节点不能同时被多人选中</td>
+</tr>
+<tr>
+<td>beforeCooperateUpdate（v0.9.8+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>协同编辑时，节点操作即将更新到其他客户端前的生命周期函数。函数接收一个对象作为参数：{ type: 【createOrUpdate（创建节点或更新节点）、delete（删除节点）】, list: 【数组类型，1.当type=createOrUpdate时，代表被创建或被更新的节点数据，即将同步到其他客户端，所以你可以修改该数据；2.当type=delete时，代表被删除的节点数据】 }</td>
+</tr>
+<tr>
+<td>beforeShortcutRun（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>快捷键操作即将执行前的生命周期函数，返回true可以阻止操作执行。函数接收两个参数：key（快捷键）、activeNodeList（当前激活的节点列表）</td>
+</tr>
+<tr>
+<td>rainbowLinesConfig（v0.9.9+）</td>
+<td>Object</td>
+<td>{ open: false, colorsList: [] }</td>
+<td>彩虹线条配置，需要先注册RainbowLines插件。对象类型，结构：{ open: false【是否开启彩虹线条】, colorsList: []【自定义彩虹线条的颜色列表，如果不设置，会使用默认颜色列表】 }</td>
+</tr>
+<tr>
+<td>addContentToHeader（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>导出png、svg、pdf时在头部添加自定义内容。可传递一个函数，这个函数可以返回null代表不添加内容，也可以返回一个对象，详细介绍请参考下方【导出时如何添加自定义内容】</td>
+</tr>
+<tr>
+<td>addContentToFooter（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>基本释义同addContentToHeader，在尾部添加自定义内容</td>
+</tr>
 </tbody>
 </table>
 <h3>数据结构</h3>
@@ -534,6 +606,8 @@
     <span class="hljs-attr">hyperlink</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-comment">// 超链接地址</span>
     <span class="hljs-attr">hyperlinkTitle</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-comment">// 超链接的标题</span>
     <span class="hljs-attr">note</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-comment">// 备注的内容</span>
+    <span class="hljs-attr">attachmentUrl</span>: <span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-comment">// v0.9.10+，附件url</span>
+    <span class="hljs-attr">attachmentName</span>: <span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-comment">// v0.9.10+，附件名称</span>
     <span class="hljs-attr">tag</span>: [], <span class="hljs-comment">// 标签列表</span>
     <span class="hljs-attr">generalization</span>: {<span class="hljs-comment">// 节点的概要，如果没有概要generalization设为null即可</span>
       <span class="hljs-attr">text</span>: <span class="hljs-string">&#x27;&#x27;</span><span class="hljs-comment">// 概要的文本</span>
@@ -592,6 +666,12 @@
 <td>{color: '#999', opacity: 0.5, fontSize: 14}</td>
 <td>水印文字样式</td>
 </tr>
+<tr>
+<td>onlyExport（v0.9.2+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>是否仅在导出时添加水印</td>
+</tr>
 </tbody>
 </table>
 <h3>图标配置</h3>
@@ -625,6 +705,34 @@
 </tr>
 </tbody>
 </table>
+<h3>导出时如何添加自定义内容</h3>
+<p><code>addContentToHeader</code>和<code>addContentToFooter</code>两个实例化选项可以用于在导出<code>png</code>、<code>svg</code>、<code>pdf</code>时在头部和尾部添加自定义的内容，默认为<code>null</code>，代表不配置，可以传递一个函数，函数可以返回<code>null</code>，代表不添加内容，如果要添加内容那么需要返回如下的结构：</p>
+<pre class="hljs"><code>{
+  el,// 要追加的自定义DOM节点，样式可内联
+  cssText,// 可选，如果样式不想内联，可以传递该值，一个css字符串
+  height: 50// 返回的DOM节点的高度，必须传递
+}
+</code></pre>
+<p>一个简单的示例：</p>
+<pre class="hljs"><code><span class="hljs-keyword">new</span> MindMap({
+  <span class="hljs-attr">addContentToFooter</span>: <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> el = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>)
+    el.className = <span class="hljs-string">&#x27;footer&#x27;</span>
+    el.innerHTML = <span class="hljs-string">&#x27;来自：simple-mind-map&#x27;</span>
+    <span class="hljs-keyword">const</span> cssText = <span class="hljs-string">`
+      .footer {
+        width: 100%;
+        height: 30px;
+      }
+    `</span>
+    <span class="hljs-keyword">return</span> {
+      el,
+      cssText,
+      <span class="hljs-attr">height</span>: <span class="hljs-number">30</span>
+    }
+  }
+})
+</code></pre>
 <h2>静态方法</h2>
 <h3>defineTheme(name, config)</h3>
 <blockquote>
@@ -721,6 +829,11 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <h3>themeConfig</h3>
 <p>当前主题配置。</p>
 <h2>实例方法</h2>
+<h3>updateData(data)</h3>
+<blockquote>
+<p>v0.9.9+</p>
+</blockquote>
+<p>更新画布数据，如果新的数据是在当前画布节点数据基础上增删改查后形成的，那么可以使用该方法来更新画布数据。性能会更好，不会重新创建所有节点，而是会尽可能的复用。</p>
 <h3>clearDraw()</h3>
 <blockquote>
 <p>v0.8.0+</p>
@@ -731,13 +844,15 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <p>v0.6.0+</p>
 </blockquote>
 <p>销毁思维导图。会移除注册的插件、移除监听的事件、删除画布的所有节点。</p>
-<h3>getSvgData({ paddingX = 0, paddingY = 0, ignoreWatermark = false })</h3>
+<h3>getSvgData({ paddingX = 0, paddingY = 0, ignoreWatermark = false, addContentToHeader, addContentToFooter })</h3>
 <blockquote>
 <p>v0.3.0+</p>
 </blockquote>
 <p><code>paddingX</code>：水平内边距</p>
 <p><code>paddingY</code>：垂直内边距</p>
 <p><code>ignoreWatermark</code>：v0.8.0+，不要绘制水印，如果不需要绘制水印的场景可以传<code>true</code>，因为绘制水印非常慢</p>
+<p><code>addContentToHeader</code>：v0.9.9+，Function，可以返回要追加到头部的自定义内容，详细介绍见【实例化选项】中的该配置</p>
+<p><code>addContentToFooter</code>：v0.9.9+，Function，可以返回要追加到尾部的自定义内容，详细介绍见【实例化选项】中的该配置</p>
 <p>获取<code>svg</code>数据，返回一个对象，详细结构如下：</p>
 <pre class="hljs"><code>{
   svg, <span class="hljs-comment">// Element，思维导图图形的整体svg元素，包括：svg（画布容器）、g（实际的思维导图组）</span>
@@ -826,7 +941,7 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <tr>
 <td>mousewheel</td>
 <td>鼠标滚动事件</td>
-<td>e（事件对象）、dir（向上up还是向下down滚动）、this（Event事件类实例）、isTouchPad（v0.6.1+，是否是触控板触发的事件）</td>
+<td>e（事件对象）、dir（向上up还是向下down滚动。v0.9.2+已改为dirs，数组类型，即支持同时保存多个方向）、this（Event事件类实例）、isTouchPad（v0.6.1+，是否是触控板触发的事件）</td>
 </tr>
 <tr>
 <td>contextmenu</td>
@@ -895,8 +1010,13 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 </tr>
 <tr>
 <td>scale</td>
-<td>放大缩小事件</td>
+<td>画布放大缩小事件</td>
 <td>scale（缩放比例）</td>
+</tr>
+<tr>
+<td>translate（v0.9.10+）</td>
+<td>画布移动事件</td>
+<td>x（水平位移）、y（垂直位移）</td>
 </tr>
 <tr>
 <td>node_img_dblclick（v0.2.15+）</td>
@@ -961,7 +1081,17 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <tr>
 <td>node_icon_click（v0.6.10+）</td>
 <td>点击节点内的图标时触发</td>
-<td>this（节点实例）、item（点击的图标名称）、e（事件对象）</td>
+<td>this（节点实例）、item（点击的图标名称）、e（事件对象）、node(图标节点，v0.9.9+)</td>
+</tr>
+<tr>
+<td>node_icon_mouseenter（v0.9.9+）</td>
+<td>鼠标移入节点内的图标时触发</td>
+<td>this（节点实例）、item（点击的图标名称）、e（事件对象）、node(图标节点)</td>
+</tr>
+<tr>
+<td>node_icon_mouseleave（v0.9.9+）</td>
+<td>鼠标移出节点内的图标时触发</td>
+<td>this（节点实例）、item（点击的图标名称）、e（事件对象）、node(图标节点)</td>
 </tr>
 <tr>
 <td>view_theme_change（v0.6.12+）</td>
@@ -982,6 +1112,41 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <td>beforeDestroy（v0.9.0+）</td>
 <td>思维导图销毁前触发，即调用了destroy方法触发</td>
 <td></td>
+</tr>
+<tr>
+<td>body_mousedown（v0.9.2+）</td>
+<td>document.body的鼠标按下事件</td>
+<td>e（事件对象）</td>
+</tr>
+<tr>
+<td>body_click</td>
+<td>document.body的点击事件</td>
+<td>e（事件对象）</td>
+</tr>
+<tr>
+<td>data_change_detail（v0.9.3+）</td>
+<td>渲染树数据变化的明细，会返回一个数组，每一项代表一个更新点，每一项都是一个对象，存在一个<code>type</code>属性，代表明细的类型，包含<code>create</code>（创建节点）、<code>update</code>（更新节点）、<code>delete</code>（删除节点），存在一个<code>data</code>属性，代表当前更新的节点数据，如果是<code>update</code>类型，还会存在一个<code>oldData</code>属性，保存了更新前该节点的数据</td>
+<td>arr（明细数据）</td>
+</tr>
+<tr>
+<td>layout_change（v0.9.4+）</td>
+<td>修改结构时触发，即调用了mindMap.setLayout()方法时触发</td>
+<td>layout（新的结构）</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_click（v0.9.9+）</td>
+<td>协同编辑时，鼠标点击人员头像时触发</td>
+<td>userInfo(人员信息)、 this(当前节点实例)、 node(头像节点)、 e(事件对象)</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_mouseenter（v0.9.9+）</td>
+<td>协同编辑时，鼠标移入人员头像时触发</td>
+<td>userInfo(人员信息)、 this(当前节点实例)、 node(头像节点)、 e(事件对象)</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_mouseleave（v0.9.9+）</td>
+<td>协同编辑时，鼠标移除人员头像时触发</td>
+<td>userInfo(人员信息)、 this(当前节点实例)、 node(头像节点)、 e(事件对象)</td>
 </tr>
 </tbody>
 </table>
@@ -1132,7 +1297,7 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 </tr>
 <tr>
 <td>SET_NODE_DATA</td>
-<td>更新节点数据，即更新节点数据对象里<code>data</code>对象的数据</td>
+<td>更新节点数据，即更新节点数据对象里<code>data</code>对象的数据，注意这个命令不会触发视图的更新</td>
 <td>node（要设置的节点）、data（对象，要更新的数据，如<code>{expand: true}</code>）</td>
 </tr>
 <tr>
@@ -1159,6 +1324,11 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <td>SET_NODE_NOTE</td>
 <td>设置节点备注</td>
 <td>node（要设置的节点）、note（备注文字）</td>
+</tr>
+<tr>
+<td>SET_NODE_ATTACHMENT（v0.9.10+）</td>
+<td>设置节点附件</td>
+<td>node（要设置的节点）、url（附件url）、name（附件名称，可选）</td>
 </tr>
 <tr>
 <td>SET_NODE_TAG</td>
@@ -1208,7 +1378,7 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <tr>
 <td>GO_TARGET_NODE（v0.6.7+）</td>
 <td>定位到某个节点，如果该节点被收起，那么会自动展开到该节点</td>
-<td>node（要定位到的节点实例或节点uid）、callback（v0.6.9+，定位完成后的回调函数）</td>
+<td>node（要定位到的节点实例或节点uid）、callback（v0.6.9+，定位完成后的回调函数，v0.9.8+接收一个参数，代表目标节点实例）</td>
 </tr>
 <tr>
 <td>INSERT_MULTI_NODE（v0.7.2+）</td>
@@ -1235,11 +1405,26 @@ mindMap.setTheme(<span class="hljs-string">&#x27;主题名称&#x27;</span>)
 <td>仅删除当前节点，操作节点为当前激活的节点或指定节点</td>
 <td>appointNodes（可选，指定要删除的节点，指定多个节点可以传一个数组）</td>
 </tr>
+<tr>
+<td>MOVE_UP_ONE_LEVEL（v0.9.6+）</td>
+<td>将指定节点上移一个层级</td>
+<td>node（可选，指定要上移层级的节点，不传则为当前激活节点中的第一个）</td>
+</tr>
+<tr>
+<td>REMOVE_CUSTOM_STYLES（v0.9.7+）</td>
+<td>一键去除某个节点的自定义样式</td>
+<td>node（可选，指定要清除自定义样式的节点，不传则为当前激活节点中的第一个）</td>
+</tr>
+<tr>
+<td>REMOVE_ALL_NODE_CUSTOM_STYLES（v0.9.7+）</td>
+<td>一键去除多个节点或所有节点的自定义样式</td>
+<td>appointNodes（可选，节点实例数组，指定要去除自定义样式的多个节点，如果不传则会去除当前画布所有节点的自定义样式）</td>
+</tr>
 </tbody>
 </table>
 <h3>setData(data)</h3>
 <p>动态设置思维导图数据，纯节点数据</p>
-<p><code>data</code>：思维导图结构数据</p>
+<p><code>data</code>：思维导图结构数据。v0.9.9+支持传空对象或者null，画布会显示空白。</p>
 <h3>setFullData(<em>data</em>)</h3>
 <blockquote>
 <p>v0.2.7+</p>

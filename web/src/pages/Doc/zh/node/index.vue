@@ -31,6 +31,21 @@
 </blockquote>
 <p>节点是否正在拖拽中</p>
 <h2>方法</h2>
+<h3>getAncestorNodes()</h3>
+<blockquote>
+<p>v0.9.9+</p>
+</blockquote>
+<p>获取祖先节点实例列表。</p>
+<h3>highlight()</h3>
+<blockquote>
+<p>v0.9.8+</p>
+</blockquote>
+<p>高亮节点。</p>
+<h3>closeHighlight()</h3>
+<blockquote>
+<p>v0.9.8+</p>
+</blockquote>
+<p>取消高亮节点。</p>
 <h3>getPureData(removeActiveState = true, removeId = false)</h3>
 <blockquote>
 <p>v0.9.0+</p>
@@ -154,11 +169,11 @@
 <h3>getData(key)</h3>
 <p>获取该节点真实数据<code>nodeData</code>的<code>data</code>对象里的指定值，<code>key</code>不传返回这个<code>data</code>对象</p>
 <h3>setData(data)</h3>
-<p>设置节点数据，<code>SET_NODE_DATA</code>命令的快捷方法</p>
+<p>设置节点数据，<code>SET_NODE_DATA</code>命令的快捷方法，这个方法和命令不会更新视图，所以如果你要修改文本，就使用<code>setText</code>方法，或者用手指文本的命令。</p>
 <h3>setText(text, richText, resetRichText)</h3>
 <ul>
 <li>
-<p><code>richText</code>：v0.4.2+，<code>Boolean</code>，如果要设置的是富文本内容，也就是<code>html</code>字符，<code>richText</code>需要传<code>true</code></p>
+<p><code>richText</code>：v0.4.2+，<code>Boolean</code>，如果要设置的是富文本内容，也就是<code>html</code>字符，<code>richText</code>需要传<code>true</code>。在v0.9.3+版本后该参数不传会默认使用之前的值。</p>
 </li>
 <li>
 <p><code>resetRichText</code>：v0.6.10+，<code>Boolean</code>，是否要复位富文本，默认为<code>false</code>，如果传<code>true</code>那么会重置富文本节点的样式</p>
@@ -173,6 +188,19 @@
 <p>设置节点超链接，<code>SET_NODE_HYPERLINK</code>命令的快捷方法</p>
 <h3>setNote(note)</h3>
 <p>设置节点备注，<code>SET_NODE_NOTE</code>命令的快捷方法</p>
+<h3>setAttachment(url, name)</h3>
+<blockquote>
+<p>v0.9.10+</p>
+</blockquote>
+<ul>
+<li>
+<p><code>url</code>：附件的url；</p>
+</li>
+<li>
+<p><code>name</code>：附件的名称，可选</p>
+</li>
+</ul>
+<p>设置节点附件，<code>SET_NODE_ATTACHMENT</code>命令的快捷方法</p>
 <h3>setTag(tag)</h3>
 <p>设置节点标签，<code>SET_NODE_TAG</code>的快捷方法</p>
 <h3>hide()</h3>

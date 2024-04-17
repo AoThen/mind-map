@@ -47,7 +47,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isDark'])
+    ...mapState({
+      isDark: state => state.localConfig.isDark
+    })
   },
   mounted() {
     this.setScrollBarWrapSize()
@@ -61,6 +63,7 @@ export default {
   methods: {
     // 向插件传递滚动条宽高数据
     setScrollBarWrapSize() {
+      if (!this.mindMap.scrollbar) return
       const {
         width
       } = this.$refs.horizontalScrollbarRef.getBoundingClientRect()

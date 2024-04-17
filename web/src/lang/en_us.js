@@ -10,7 +10,9 @@ export default {
     line: 'Line',
     width: 'Width',
     style: 'Style',
+    lineRadius: 'Radius',
     lineOfOutline: 'Line of outline',
+    showArrow: 'Is show arrow',
     nodePadding: 'Node padding',
     nodeMargin: 'Node margin',
     horizontal: 'Horizontal',
@@ -27,6 +29,7 @@ export default {
     enableFreeDrag: 'Enable node free drag',
     watermark: 'Watermark',
     showWatermark: 'Is show watermark',
+    onlyExport: 'Only export',
     watermarkDefaultText: 'Watermark text',
     watermarkText: 'Watermark text',
     watermarkTextColor: 'Text color',
@@ -55,7 +58,13 @@ export default {
     associativeLineText: 'Associative line text',
     fontFamily: 'Font family',
     fontSize: 'Font size',
-    isShowScrollbar: 'Is show scrollbar'
+    isShowScrollbar: 'Is show scrollbar',
+    isUseHandDrawnLikeStyle: 'Is use hand drawn like style',
+    rootLineStartPos: 'Root line start pos',
+    center: 'Center',
+    right: 'Right',
+    rainbowLines: 'Rainbow lines',
+    notUseRainbowLines: 'Not use rainbow lines'
   },
   color: {
     moreColor: 'More color'
@@ -87,7 +96,9 @@ export default {
     fitCanvas: 'Fit canvas',
     removeImage: 'Remove image',
     removeHyperlink: 'Remove hyperlink',
-    removeNote: 'Remove note'
+    removeNote: 'Remove note',
+    removeCustomStyles: 'Remove custom styles',
+    removeAllNodeCustomStyles: 'Remove all node custom styles'
   },
   count: {
     words: 'Words',
@@ -119,7 +130,9 @@ export default {
     paddingX: 'Padding x',
     paddingY: 'Padding y',
     useMultiPageExport: 'Export multi page',
-    defaultFileName: 'Mind map'
+    defaultFileName: 'Mind map',
+    addFooterTextPlaceholder: 'For example: From simple-mind-map',
+    addFooterText: 'Add text at the footer'
   },
   fullscreen: {
     fullscreenShow: 'Full screen show',
@@ -140,7 +153,9 @@ export default {
     openMiniMap: 'Open mini map',
     closeMiniMap: 'Close mini map',
     readonly: 'Change to eadonly',
-    edit: 'Change to edit'
+    edit: 'Change to edit',
+    backToRoot: 'Back to root node',
+    changeSourceCodeEdit: 'Switch to source code editing mode'
   },
   nodeHyperlink: {
     title: 'Link',
@@ -200,7 +215,13 @@ export default {
     line: 'Line',
     nodePadding: 'Node padding',
     horizontal: 'Horizontal',
-    vertical: 'Vertical'
+    vertical: 'Vertical',
+    gradientStyle: 'Gradient',
+    startColor: 'Start',
+    endColor: 'End',
+    arrowDir: 'Arrow dir',
+    arrowDirStart: 'Start',
+    arrowDirEnd: 'End'
   },
   theme: {
     title: 'Theme',
@@ -238,6 +259,7 @@ export default {
     associativeLine: 'Associative line',
     painter: 'Painter',
     formula: 'Formula',
+    attachment: 'Attachment',
     more: 'More',
     selectFileTip: 'Please select a file',
     notSupportTip:
@@ -248,7 +270,8 @@ export default {
     fileContentError: 'File content error',
     fileOpenFailed: 'File open failed',
     defaultFileName: 'Mind map',
-    creatingTip: 'Creating file'
+    creatingTip: 'Creating file',
+    directory: 'Directory'
   },
   edit: {
     newFeatureNoticeTitle: 'New feature reminder',
@@ -258,7 +281,9 @@ export default {
     splitByWrap: 'Is automatically split nodes based on line breaks?',
     tip: 'Tip',
     yes: 'Yes',
-    no: 'No'
+    no: 'No',
+    exportError: 'Export failed',
+    dragTip: 'Release here to import the file'
   },
   mouseAction: {
     tip1:
@@ -298,5 +323,19 @@ export default {
   },
   other: {
     loading: 'Loading, please wait...'
+  },
+  sourceCodeEdit: {
+    sourceCodeTip: 'It is not recommended to modify the style in rich text mode because it requires synchronous modification of data and HTML structure.',
+    format: 'Format',
+    copy: 'Copy',
+    confirm: 'Complete',
+    close: 'Close',
+    formatErrorTip: 'The JSON format is incorrect. Please check and try again',
+    copyTip: 'Copied to clipboard',
+    formatTip: 'Format complete'
+  },
+  attachment: {
+    deleteAttachment: 'Delete attachment',
+    tip: 'The attachment function is only available on the client side'
   }
 }

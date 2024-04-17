@@ -1,25 +1,31 @@
 <template>
   <div>
     <h1>Introduction</h1>
-<p><code>simple-mind-map</code> is a simple and powerful web mind map library, not dependent on any specific framework. Can help you quickly develop mind mapping products.</p>
+<p><code>simple-mind-map</code> 【Chinese name: 思绪 mind map】 is a simple and powerful web mind map library, not dependent on any specific framework. Can help you quickly develop mind mapping products.</p>
 <blockquote>
 <p>If you just want to use mind mapping, you can also use the demo of this project as a regular online mind mapping tool. Click on the 【Online Demo】 in the upper right corner to start using it.</p>
 <p>Additionally, a client is provided for download, support <code>Windows</code>、<code>Mac</code> and <code>Linux</code>, <a href="/mind-map/#/doc/zh/client">Click here to learn more</a>。</p>
 </blockquote>
 <h2>Features</h2>
 <ul>
-<li><input type="checkbox" id="checkbox16" checked="true" /><label for="checkbox16">Pluggable architecture, in addition to core functions, other functions are provided as plugins, which can be used as needed to reduce packaging volume</label></li>
-<li><input type="checkbox" id="checkbox17" checked="true" /><label for="checkbox17">Support logical structure chart, mind map, Organizational chart, directory organization chart, timeline (horizontal and vertical), fishbone chart and other structures</label></li>
-<li><input type="checkbox" id="checkbox18" checked="true" /><label for="checkbox18">Built-in multiple themes, allowing for highly customizable styles, and supporting registration of new themes</label></li>
-<li><input type="checkbox" id="checkbox19" checked="true" /><label for="checkbox19">Node content supports text (regular text, rich text), images, icons, hyperlinks, notes, labels, summaries, and math formulas</label></li>
-<li><input type="checkbox" id="checkbox20" checked="true" /><label for="checkbox20">Nodes support drag and drop (drag and move, freely adjust), multiple node shapes, and fully customize node content using DDM</label></li>
-<li><input type="checkbox" id="checkbox21" checked="true" /><label for="checkbox21">Support canvas dragging and scaling</label></li>
-<li><input type="checkbox" id="checkbox22" checked="true" /><label for="checkbox22">Supports two multi node selection methods: mouse button drag selection and Ctrl+left button selection</label></li>
-<li><input type="checkbox" id="checkbox23" checked="true" /><label for="checkbox23">Supoorts to export as </label><code>json</code>、<code>png</code>、<code>svg</code>、<code>pdf</code>、<code>markdown</code>、<code>xmind</code>, support import from <code>json</code>、<code>xmind</code>、<code>markdown</code></li>
-<li><input type="checkbox" id="checkbox24" checked="true" /><label for="checkbox24">Support shortcut keys, forward and backward, correlation lines, search and replacement, small maps, watermarks, and scrollbar</label></li>
-<li><input type="checkbox" id="checkbox25" checked="true" /><label for="checkbox25">Provide rich configurations to meet various scenarios and usage habits</label></li>
-<li><input type="checkbox" id="checkbox26" checked="true" /><label for="checkbox26">Support collaborative editing</label></li>
+<li><input type="checkbox" id="checkbox32" checked="true" /><label for="checkbox32">Pluggable architecture, in addition to core functions, other functions are provided as plugins, which can be used as needed to reduce packaging volume</label></li>
+<li><input type="checkbox" id="checkbox33" checked="true" /><label for="checkbox33">Support logical structure chart, mind map, Organizational chart, directory organization chart, timeline (horizontal and vertical), fishbone chart and other structures</label></li>
+<li><input type="checkbox" id="checkbox34" checked="true" /><label for="checkbox34">Built-in multiple themes, allowing for highly customizable styles, and supporting registration of new themes</label></li>
+<li><input type="checkbox" id="checkbox35" checked="true" /><label for="checkbox35">Node content supports text (regular text, rich text), images, icons, hyperlinks, notes, labels, summaries, and math formulas</label></li>
+<li><input type="checkbox" id="checkbox36" checked="true" /><label for="checkbox36">Nodes support drag and drop (drag and move, freely adjust), multiple node shapes, and fully customize node content using DDM</label></li>
+<li><input type="checkbox" id="checkbox37" checked="true" /><label for="checkbox37">Support canvas dragging and scaling</label></li>
+<li><input type="checkbox" id="checkbox38" checked="true" /><label for="checkbox38">Supports two multi node selection methods: mouse button drag selection and Ctrl+left button selection</label></li>
+<li><input type="checkbox" id="checkbox39" checked="true" /><label for="checkbox39">Supoorts to export as </label><code>json</code>、<code>png</code>、<code>svg</code>、<code>pdf</code>、<code>markdown</code>、<code>xmind</code>, support import from <code>json</code>、<code>xmind</code>、<code>markdown</code></li>
+<li><input type="checkbox" id="checkbox40" checked="true" /><label for="checkbox40">Support shortcut keys, forward and backward, correlation lines, search and replacement, small maps, watermarks, and scrollbar</label></li>
+<li><input type="checkbox" id="checkbox41" checked="true" /><label for="checkbox41">Provide rich configurations to meet various scenarios and usage habits</label></li>
+<li><input type="checkbox" id="checkbox42" checked="true" /><label for="checkbox42">Support collaborative editing</label></li>
 </ul>
+<blockquote>
+<p>Features that will not be implemented:</p>
+<p>1.Free nodes, i.e. multiple root nodes;</p>
+<p>2.Continue adding nodes after the summary node;</p>
+<p>If you need the above features, this library may not meet your needs.</p>
+</blockquote>
 <h2>Repository Catalog Introduction</h2>
 <p>1.<code>simple-mind-map</code></p>
 <p>This is a mind map library that is framework-agnostic and can be used with
@@ -28,16 +34,16 @@ frameworks such as Vue and React, or without a framework.</p>
 <p>This is an online mind map built using the <code>simple-mind-map</code> library and based
 on <code>Vue2.x</code> and <code>ElementUI</code>. Features include:</p>
 <ul>
-<li><input type="checkbox" id="checkbox27" checked="true" /><label for="checkbox27">Toolbar, which supports inserting and deleting nodes, and editing node</label>
+<li><input type="checkbox" id="checkbox43" checked="true" /><label for="checkbox43">Toolbar, which supports inserting and deleting nodes, and editing node</label>
 images, icons, hyperlinks, notes, tags, and summaries</li>
-<li><input type="checkbox" id="checkbox28" checked="true" /><label for="checkbox28">Sidebar, with panels for basic style settings, node style settings,</label>
+<li><input type="checkbox" id="checkbox44" checked="true" /><label for="checkbox44">Sidebar, with panels for basic style settings, node style settings,</label>
 outline, theme selection, and structure selection</li>
-<li><input type="checkbox" id="checkbox29" checked="true" /><label for="checkbox29">Import and export functionality; data is saved in the browser's local</label>
+<li><input type="checkbox" id="checkbox45" checked="true" /><label for="checkbox45">Import and export functionality; data is saved in the browser's local</label>
 storage by default, but it also supports creating, opening, and editing
 local files on the computer directly</li>
-<li><input type="checkbox" id="checkbox30" checked="true" /><label for="checkbox30">Right-click menu, which supports operations such as expanding, collapsing,</label>
+<li><input type="checkbox" id="checkbox46" checked="true" /><label for="checkbox46">Right-click menu, which supports operations such as expanding, collapsing,</label>
 and organizing layout</li>
-<li><input type="checkbox" id="checkbox31" checked="true" /><label for="checkbox31">Bottom bar, which supports node and word count statistics, switching</label>
+<li><input type="checkbox" id="checkbox47" checked="true" /><label for="checkbox47">Bottom bar, which supports node and word count statistics, switching</label>
 between edit and read-only modes, zooming in and out, and switching to
 full screen, support mini map</li>
 </ul>
@@ -220,6 +226,90 @@ full screen, support mini map</li>
     <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
         <img src="../../../../assets/avatar/HaHN.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
         <p>HaHN</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/继龙.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>继龙</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/欣.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>欣</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>易空小易</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/国发.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>国发</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>建明</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/汪津合.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>汪津合</p>
+    </div>
+</div>
+<div style="display: flex;">
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>博文</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/慕智打印-兰兰.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>慕智打印-兰兰</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>锦冰</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/旭东.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>旭东</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/俊奇.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>俊奇</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/橘半.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>橘半</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/pluvet.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>pluvet</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/皇登攀.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>皇登攀</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/风格.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>风格</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>SR</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/逆水行舟.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>逆水行舟</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>LiuJL</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/L.jpg" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>L</p>
+    </div>
+</div>
+<div style="display: flex;">
+    <div style="display: flex; flex-direction: column; align-items: center; width: fit-content; margin: 5px;">
+        <img src="../../../../assets/avatar/default.png" style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;" />
+        <p>sunniberg</p>
     </div>
 </div>
   </div>

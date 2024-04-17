@@ -36,7 +36,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isDark']),
+    ...mapState({
+      isDark: state => state.localConfig.isDark
+    }),
   },
   created() {
     this.$bus.$on('data_change', this.onDataChange)
@@ -68,6 +70,7 @@ export default {
      * @Desc: 遍历
      */
     walk(data) {
+      if (!data) return
       this.num++
       this.textStr += String(data.data.text) || ''
       if (data.children && data.children.length > 0) {

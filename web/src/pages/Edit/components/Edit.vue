@@ -1,5 +1,11 @@
 <template>
-  <div class="editContainer">
+  <div
+    class="editContainer"
+    @dragenter.stop.prevent="onDragenter"
+    @dragleave.stop.prevent
+    @dragover.stop.prevent
+    @drop.stop.prevent
+  >
     <div class="mindMapContainer" ref="mindMapContainer"></div>
     <Count :mindMap="mindMap" v-if="!isZenMode"></Count>
     <Navigator :mindMap="mindMap"></Navigator>
@@ -16,6 +22,7 @@
       v-if="mindMap"
       :mindMap="mindMap"
     ></NodeNoteContentShow>
+    <NodeAttachment v-if="mindMap" :mindMap="mindMap"></NodeAttachment>
     <NodeImgPreview v-if="mindMap" :mindMap="mindMap"></NodeImgPreview>
     <SidebarTrigger v-if="!isZenMode"></SidebarTrigger>
     <Search v-if="mindMap" :mindMap="mindMap"></Search>
@@ -24,6 +31,16 @@
     <OutlineEdit v-if="mindMap" :mindMap="mindMap"></OutlineEdit>
     <Scrollbar v-if="isShowScrollbar && mindMap" :mindMap="mindMap"></Scrollbar>
     <FormulaSidebar v-if="mindMap" :mindMap="mindMap"></FormulaSidebar>
+    <SourceCodeEdit v-if="mindMap" :mindMap="mindMap"></SourceCodeEdit>
+    <div
+      class="dragMask"
+      v-if="showDragMask"
+      @dragleave.stop.prevent="onDragleave"
+      @dragover.stop.prevent
+      @drop.stop.prevent="onDrop"
+    >
+      <div class="dragTip">{{ $t('edit.dragTip') }}</div>
+    </div>
   </div>
 </template>
 
@@ -45,7 +62,11 @@ import SearchPlugin from 'simple-mind-map/src/plugins/Search.js'
 import Painter from 'simple-mind-map/src/plugins/Painter.js'
 import ScrollbarPlugin from 'simple-mind-map/src/plugins/Scrollbar.js'
 import Formula from 'simple-mind-map/src/plugins/Formula.js'
-import Cooperate from 'simple-mind-map/src/plugins/Cooperate.js'
+import RainbowLines from 'simple-mind-map/src/plugins/RainbowLines.js'
+// 协同编辑插件
+// import Cooperate from 'simple-mind-map/src/plugins/Cooperate.js'
+// 手绘风格插件，该插件为付费插件，详情请查看开发文档
+// import HandDrawnLikeStyle from 'simple-mind-map-plugin-handdrawnlikestyle'
 import OutlineSidebar from './OutlineSidebar'
 import Style from './Style'
 import BaseStyle from './BaseStyle'
@@ -79,6 +100,8 @@ import handleClipboardText from '@/utils/handleClipboardText'
 import Scrollbar from './Scrollbar.vue'
 import exampleData from 'simple-mind-map/example/exampleData'
 import FormulaSidebar from './FormulaSidebar.vue'
+import SourceCodeEdit from './SourceCodeEdit.vue'
+import NodeAttachment from './NodeAttachment.vue'
 
 // 注册插件
 MindMap.usePlugin(MiniMap)
@@ -94,9 +117,9 @@ MindMap.usePlugin(MiniMap)
   .usePlugin(TouchEvent)
   .usePlugin(SearchPlugin)
   .usePlugin(Painter)
-  .usePlugin(ScrollbarPlugin)
   .usePlugin(Formula)
-// .usePlugin(Cooperate)// 协同插件
+  .usePlugin(RainbowLines)
+// .usePlugin(Cooperate) // 协同插件
 
 // 注册自定义主题
 customThemeList.forEach(item => {
@@ -130,7 +153,9 @@ export default {
     NodeIconToolbar,
     OutlineEdit,
     Scrollbar,
-    FormulaSidebar
+    FormulaSidebar,
+    SourceCodeEdit,
+    NodeAttachment
   },
   data() {
     return {
@@ -138,16 +163,20 @@ export default {
       mindMap: null,
       mindMapData: null,
       prevImg: '',
-      storeConfigTimer: null
+      storeConfigTimer: null,
+      showDragMask: false
     }
   },
   computed: {
     ...mapState({
       isZenMode: state => state.localConfig.isZenMode,
       openNodeRichText: state => state.localConfig.openNodeRichText,
+      isShowScrollbar: state => state.localConfig.isShowScrollbar,
       useLeftKeySelectionRightKeyDrag: state =>
         state.localConfig.useLeftKeySelectionRightKeyDrag,
-      isShowScrollbar: state => state.localConfig.isShowScrollbar
+      isUseHandDrawnLikeStyle: state =>
+        state.localConfig.isUseHandDrawnLikeStyle,
+      extraTextOnExport: state => state.extraTextOnExport
     })
   },
   watch: {
@@ -156,6 +185,20 @@ export default {
         this.addRichTextPlugin()
       } else {
         this.removeRichTextPlugin()
+      }
+    },
+    isShowScrollbar() {
+      if (this.isShowScrollbar) {
+        this.addScrollbarPlugin()
+      } else {
+        this.removeScrollbarPlugin()
+      }
+    },
+    isUseHandDrawnLikeStyle() {
+      if (this.isUseHandDrawnLikeStyle) {
+        this.addHandDrawnLikeStylePlugin()
+      } else {
+        this.removeHandDrawnLikeStylePlugin()
       }
     }
   },
@@ -309,6 +352,7 @@ export default {
         enableAutoEnterTextEditWhenKeydown: true,
         customHandleClipboardText: handleClipboardText,
         defaultNodeImage: require('../../../assets/img/图片加载失败.svg'),
+        initRootNodePosition: ['center', 'center'],
         handleIsSplitByWrapOnPasteCreateNewNode: () => {
           return this.$confirm(
             this.$t('edit.splitByWrap'),
@@ -324,12 +368,76 @@ export default {
           console.error(err)
           switch (code) {
             case 'export_error':
-              this.$message.error('导出失败')
+              this.$message.error(this.$t('edit.exportError'))
               break
             default:
               break
           }
         },
+        addContentToFooter: () => {
+          const text = this.extraTextOnExport.trim()
+          if (!text) return null
+          const el = document.createElement('div')
+          el.className = 'footer'
+          el.innerHTML = text
+          const cssText = `
+            .footer {
+              width: 100%;
+              height: 30px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-size: 12px;
+              color: #979797;
+            }
+          `
+          return {
+            el,
+            cssText,
+            height: 30
+          }
+        }
+        // addContentToHeader: () => {
+        //   const el = document.createElement('div')
+        //   el.className = 'footer'
+        //   el.innerHTML = '理想青年实验室'
+        //   const cssText = `
+        //     .header {
+        //       width: 100%;
+        //       height: 50px;
+        //       background: #f5f5f5;
+        //       display: flex;
+        //       justify-content: center;
+        //       align-items: center
+        //     }
+        //   `
+        //   return {
+        //     el,
+        //     cssText,
+        //     height: 50
+        //   }
+        // },
+        // beforeShortcutRun: (key, activeNodeList) => {
+        //   console.log(key, activeNodeList)
+        //   // 阻止删除快捷键行为
+        //   if (key === 'Backspace') {
+        //     return true
+        //   }
+        // }
+        // handleNodePasteImg: img => {
+        //   console.log(img)
+        //   return new Promise(resolve => {
+        //     setTimeout(() => {
+        //       resolve({
+        //         url: require('../../../assets/img/themes/autumn.jpg'),
+        //         size: {
+        //           width: 100,
+        //           height: 100
+        //         }
+        //       })
+        //     }, 200)
+        //   })
+        // }
         // isUseCustomNodeContent: true,
         // 示例1：组件里用到了router、store、i18n等实例化vue组件时需要用到的东西
         // customCreateNodeContent: (node) => {
@@ -377,6 +485,8 @@ export default {
         // }
       })
       if (this.openNodeRichText) this.addRichTextPlugin()
+      if (this.isShowScrollbar) this.addScrollbarPlugin()
+      if (this.isUseHandDrawnLikeStyle) this.addHandDrawnLikeStylePlugin()
       this.mindMap.keyCommand.addShortcut('Control+s', () => {
         this.manualSave()
       })
@@ -400,7 +510,10 @@ export default {
         'painter_start',
         'painter_end',
         'scrollbar_change',
-        'scale'
+        'scale',
+        'translate',
+        'node_attachmentClick',
+        'node_attachmentContextmenu'
       ].forEach(event => {
         this.mindMap.on(event, (...args) => {
           this.$bus.$emit(event, ...args)
@@ -428,6 +541,12 @@ export default {
       //   console.log(this.mindMap.renderer.root.getRect())
       //   console.log(this.mindMap.renderer.root.getRectInSvg())
       // }, 5000);
+      // setTimeout(() => {
+      //   this.mindMap.renderer.renderTree.data.fillColor = 'red'
+      //   this.mindMap.render()
+      //   this.mindMap.reRender()
+      //   this.mindMap.render()
+      // }, 5000)
     },
 
     // url中是否存在要打开的文件
@@ -516,6 +635,38 @@ export default {
     // 移除节点富文本编辑插件
     removeRichTextPlugin() {
       this.mindMap.removePlugin(RichText)
+    },
+
+    // 加载滚动条插件
+    addScrollbarPlugin() {
+      if (!this.mindMap) return
+      this.mindMap.addPlugin(ScrollbarPlugin)
+    },
+
+    // 移除滚动条插件
+    removeScrollbarPlugin() {
+      this.mindMap.removePlugin(ScrollbarPlugin)
+    },
+
+    // 加载手绘风格插件
+    addHandDrawnLikeStylePlugin() {
+      try {
+        if (!this.mindMap) return
+        this.mindMap.addPlugin(HandDrawnLikeStyle)
+        this.mindMap.reRender()
+      } catch (error) {
+        console.log('手绘风格插件不存在')
+      }
+    },
+
+    // 移除手绘风格插件
+    removeHandDrawnLikeStylePlugin() {
+      try {
+        this.mindMap.removePlugin(HandDrawnLikeStyle)
+        this.mindMap.reRender()
+      } catch (error) {
+        console.log('手绘风格插件不存在')
+      }
     },
 
     // 测试动态插入节点
@@ -630,7 +781,7 @@ export default {
       if (this.mindMap.cooperate && this.$route.query.userName) {
         this.mindMap.cooperate.setProvider(null, {
           roomName: 'demo-room',
-          signalingList: ['ws://192.168.3.125:4444']
+          signalingList: ['ws://10.16.83.118:4444']
         })
         this.mindMap.cooperate.setUserInfo({
           id: Math.random(),
@@ -644,6 +795,20 @@ export default {
               : ''
         })
       }
+    },
+
+    // 拖拽文件到页面导入
+    onDragenter() {
+      this.showDragMask = true
+    },
+    onDragleave() {
+      this.showDragMask = false
+    },
+    onDrop(e) {
+      this.showDragMask = false
+      const dt = e.dataTransfer
+      const file = dt.files && dt.files[0]
+      this.$bus.$emit('importFile', file)
     }
   }
 }
@@ -656,6 +821,24 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
+
+  .dragMask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3999;
+
+    .dragTip {
+      pointer-events: none;
+      font-weight: bold;
+    }
+  }
 
   .mindMapContainer {
     position: absolute;

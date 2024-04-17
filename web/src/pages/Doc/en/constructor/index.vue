@@ -37,9 +37,9 @@
 </tr>
 <tr>
 <td>data</td>
-<td>Object</td>
-<td>{}</td>
-<td>Mind map data, Please refer to the introduction of 【Data structure】 below</td>
+<td>Object 、null</td>
+<td></td>
+<td>Mind map data, Please refer to the introduction of 【Data structure】 below. V0.9.9+supports passing empty objects or null, and the canvas will display blank space</td>
 <td></td>
 </tr>
 <tr>
@@ -290,7 +290,7 @@
 <tr>
 <td>maxHistoryCount（v0.5.6+）</td>
 <td>Number</td>
-<td>1000</td>
+<td>1000（v0.9.2+ changed 500）</td>
 <td></td>
 <td>Maximum number of history records</td>
 </tr>
@@ -595,6 +595,97 @@
 <td>Image address, the default image displayed when node image loading fails</td>
 <td></td>
 </tr>
+<tr>
+<td>handleNodePasteImg（v0.9.2+）</td>
+<td>null or Function</td>
+<td>null</td>
+<td>The processing method for pasting images from the clipboard on a node is to convert them into data:URL data and insert them into the node by default. You can use this method to upload image data to the server and save the URL of the image. An asynchronous method can be passed to receive image data of Blob type, and the specified structure needs to be returned: { url, size: {width, height} }</td>
+<td></td>
+</tr>
+<tr>
+<td>isLimitMindMapInCanvas（v0.9.2+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>Whether to limit the mind map within the canvas. For example, when dragging to the right, the leftmost part of the mind map graphic will not be able to continue dragging to the right when it reaches the center of the canvas, and the same applies to other things</td>
+<td></td>
+</tr>
+<tr>
+<td>isLimitMindMapInCanvasWhenHasScrollbar（v0.9.2+）</td>
+<td>Boolean</td>
+<td>true</td>
+<td>When registering the Scrollbar plugin, will the mind map be limited to the canvas and the isLimitMindMapInCanvas configuration no longer work</td>
+<td></td>
+</tr>
+<tr>
+<td>associativeLineInitPointsPosition（v0.9.5+）</td>
+<td>null / { from, to }</td>
+<td>{ from: '', to: '' }</td>
+<td>By default, the position of the two endpoints of a newly created association line is calculated based on the relative position of the center points of the two nodes. If you want to fix the position, you can configure it through this option. If neither from nor to is transmitted, they will be automatically calculated. If only one is transmitted, the other will be automatically calculated. from and to optional values</td>
+<td></td>
+</tr>
+<tr>
+<td>：left、top、bottom、right</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>enableAdjustAssociativeLinePoints（v0.9.5+）</td>
+<td>Boolean</td>
+<td>true</td>
+<td>Is it allowed to adjust the position of the two endpoints of the associated line</td>
+<td></td>
+</tr>
+<tr>
+<td>isOnlySearchCurrentRenderNodes（v0.9.8+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>Is it necessary to only search for the current rendered node, and nodes that have been collapsed will not be searched for</td>
+<td></td>
+</tr>
+<tr>
+<td>onlyOneEnableActiveNodeOnCooperate（v0.9.8+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>During collaborative editing, the same node cannot be selected by multiple people at the same time</td>
+<td></td>
+</tr>
+<tr>
+<td>beforeCooperateUpdate（v0.9.8+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>During collaborative editing, node operations are about to be updated to the lifecycle functions of other clients. The function takes an object as a parameter:{ type: 【createOrUpdate（Create or update nodes）、delete（Delete node）】, list: 【Array type, 1.When type=createOrUpdate, it represents the node data that has been created or updated, which will be synchronized to other clients, so you can modify the data; 2.When type=delete, represents the deleted node data】 }</td>
+<td></td>
+</tr>
+<tr>
+<td>beforeShortcutRun（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>The lifecycle function before the shortcut operation is about to be executed, returning true can prevent the operation from executing. The function takes two parameters: key（Shortcut key）、activeNodeList（List of currently activated nodes）</td>
+<td></td>
+</tr>
+<tr>
+<td>rainbowLinesConfig（v0.9.9+）</td>
+<td>Object</td>
+<td>{ open: false, colorsList: [] }</td>
+<td>Rainbow line configuration requires registering the RainbowLines plugin first. Object type, Structure: { open: false【Is turn on rainbow lines】, colorsList: []【Customize the color list for rainbow lines. If not set, the default color list will be used】 }</td>
+<td></td>
+</tr>
+<tr>
+<td>addContentToHeader（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>Add custom content to the header when exporting PNG, SVG, and PDF. Can pass a function that can return null to indicate no content is added, or it can return an object, For a detailed introduction, please refer to section 【How to add custom content when exporting】 below</td>
+<td></td>
+</tr>
+<tr>
+<td>addContentToFooter（v0.9.9+）</td>
+<td>Function、null</td>
+<td>null</td>
+<td>The basic definition is the same as addContentToHeader, adding custom content at the end</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <h3>Data structure</h3>
@@ -674,6 +765,12 @@
 <td>{color: '#999', opacity: 0.5, fontSize: 14}</td>
 <td>Watermark text style</td>
 </tr>
+<tr>
+<td>onlyExport（v0.9.2+）</td>
+<td>Boolean</td>
+<td>false</td>
+<td>Is only add watermarks during export</td>
+</tr>
 </tbody>
 </table>
 <h3>Icon Configuration</h3>
@@ -707,6 +804,34 @@
 </tr>
 </tbody>
 </table>
+<h3>How to add custom content when exporting</h3>
+<p>The two instantiation options <code>addContentToHeader</code> and <code>addContentToFooter</code> can be used to add custom content at the beginning and end when exporting <code>png</code>、<code>svg</code>、<code>pdf</code>, The default value is <code>null</code>, which means no configuration. A function can be passed and can return <code>null</code>, which means no content will be added. If you want to add content, you need to return the following structure:</p>
+<pre class="hljs"><code>{
+  el,// Custom DOM node to be added, styles can be inline
+  cssText,// Optional, if the style does not want to be inlined, you can pass this value as a CSS string
+  height: 50// The height of the returned DOM node must be passed
+}
+</code></pre>
+<p>A simple example:</p>
+<pre class="hljs"><code><span class="hljs-keyword">new</span> MindMap({
+  <span class="hljs-attr">addContentToFooter</span>: <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> el = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>)
+    el.className = <span class="hljs-string">&#x27;footer&#x27;</span>
+    el.innerHTML = <span class="hljs-string">&#x27;From: simple-mind-map&#x27;</span>
+    <span class="hljs-keyword">const</span> cssText = <span class="hljs-string">`
+      .footer {
+        width: 100%;
+        height: 30px;
+      }
+    `</span>
+    <span class="hljs-keyword">return</span> {
+      el,
+      cssText,
+      <span class="hljs-attr">height</span>: <span class="hljs-number">30</span>
+    }
+  }
+})
+</code></pre>
 <h2>Static methods</h2>
 <h3>defineTheme(name, config)</h3>
 <blockquote>
@@ -803,6 +928,11 @@ mindMap.setTheme(<span class="hljs-string">&#x27;Theme name&#x27;</span>)
 <h3>themeConfig</h3>
 <p>Current Theme Configuration.</p>
 <h2>Instance methods</h2>
+<h3>updateData(data)</h3>
+<blockquote>
+<p>v0.9.9+</p>
+</blockquote>
+<p>Update canvas data. If the new data is formed by adding, deleting, modifying, and querying based on the current canvas node data, this method can be used to update the canvas data. The performance will be better, and not all nodes will be recreated, but rather reused as much as possible.</p>
 <h3>clearDraw()</h3>
 <blockquote>
 <p>v0.8.0+</p>
@@ -813,13 +943,15 @@ mindMap.setTheme(<span class="hljs-string">&#x27;Theme name&#x27;</span>)
 <p>v0.6.0+</p>
 </blockquote>
 <p>Destroy mind maps. It will remove registered plugins, remove listening events, and delete all nodes on the canvas.</p>
-<h3>getSvgData({ paddingX = 0, paddingY = 0, ignoreWatermark = false })</h3>
+<h3>getSvgData({ paddingX = 0, paddingY = 0, ignoreWatermark = false, addContentToHeader, addContentToFooter })</h3>
 <blockquote>
 <p>v0.3.0+</p>
 </blockquote>
 <p><code>paddingX</code>: Padding x</p>
 <p><code>paddingY</code>: Padding y</p>
 <p><code>ignoreWatermark</code>：v0.8.0+, Do not draw watermarks. If you do not need to draw watermarks, you can pass 'true' because drawing watermarks is very slow</p>
+<p><code>addContentToHeader</code>：v0.9.9+, Function, You can return the custom content to be added to the header, as detailed in the configuration in 【Instantiation options】</p>
+<p><code>addContentToFooter</code>：v0.9.9+, Function, You can return the custom content to be added to the tail, as detailed in the configuration in 【Instantiation options】</p>
 <p>Get the <code>svg</code> data and return an object. The detailed structure is as follows:</p>
 <pre class="hljs"><code>{
   svg, <span class="hljs-comment">// Element, the overall svg element of the mind map graphics, including: svg (canvas container), g (actual mind map group)</span>
@@ -910,7 +1042,7 @@ poor performance and should be used sparingly.</p>
 <tr>
 <td>mousewheel</td>
 <td>Mouse scroll event</td>
-<td>e (event object), dir (up or down scroll), this (Event event class instance) 、isTouchPad（v0.6.1+, Is it an event triggered by the touchpad）</td>
+<td>e (event object), dir (up or down scroll. v0.9.2+ changed to dirs, array type, which supports saving multiple directions simultaneously), this (Event event class instance) 、isTouchPad（v0.6.1+, Is it an event triggered by the touchpad）</td>
 </tr>
 <tr>
 <td>contextmenu</td>
@@ -984,8 +1116,13 @@ poor performance and should be used sparingly.</p>
 </tr>
 <tr>
 <td>scale</td>
-<td>Zoom event</td>
+<td>Canvas zoom event</td>
 <td>scale (zoom ratio)</td>
+</tr>
+<tr>
+<td>translate（v0.9.10+）</td>
+<td>Canvas movement event</td>
+<td>x（translate x）、y（translate y）</td>
 </tr>
 <tr>
 <td>node_img_dblclick（v0.2.15+）</td>
@@ -1050,7 +1187,17 @@ poor performance and should be used sparingly.</p>
 <tr>
 <td>node_icon_click（v0.6.10+）</td>
 <td>Triggered when clicking on an icon within a node</td>
-<td>this（node instance）、item（Click on the icon name）、e（event object）</td>
+<td>this（node instance）、item（Click on the icon name）、e（event object）、node(Icon node, v0.9.9+)</td>
+</tr>
+<tr>
+<td>node_icon_mouseenter（v0.9.9+）</td>
+<td>Triggered when the mouse moves into an icon within a node</td>
+<td>this（node instance）、item（Click on the icon name）、e（event object）、node(Icon node)</td>
+</tr>
+<tr>
+<td>node_icon_mouseleave（v0.9.9+）</td>
+<td>Triggered when the mouse moves out of the icon within the node</td>
+<td>this（node instance）、item（Click on the icon name）、e（event object）、node(Icon node)</td>
 </tr>
 <tr>
 <td>view_theme_change（v0.6.12+）</td>
@@ -1071,6 +1218,41 @@ poor performance and should be used sparingly.</p>
 <td>beforeDestroy（v0.9.0+）</td>
 <td>Triggered before destroying the mind map, i.e. triggered by calling the destroy method</td>
 <td></td>
+</tr>
+<tr>
+<td>body_mousedown（v0.9.2+）</td>
+<td>Mousedown event of document.body</td>
+<td>e（event object）</td>
+</tr>
+<tr>
+<td>body_click</td>
+<td>Click event of document.body</td>
+<td>e（event object）</td>
+</tr>
+<tr>
+<td>data_change_detail（v0.9.3+）</td>
+<td>The detailed changes in rendering tree data will return an array, with each item representing an update point and each item being an object, There is a 'type' attribute that represents the type of detail, Including 'create' (create node), 'update' (update node), 'delete' (delete node), There is a 'data' attribute that represents the current updated node data. If it is of the 'update' type, there will also be an 'oldData' attribute that saves the data of the node before the update</td>
+<td>arr（Detail data）</td>
+</tr>
+<tr>
+<td>layout_change（v0.9.4+）</td>
+<td>Triggered when modifying the structure, i.e. when the mindMap.setLayout() method is called</td>
+<td>layout（New layout）</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_click（v0.9.9+）</td>
+<td>Triggered when the mouse clicks on a person's avatar during collaborative editing</td>
+<td>userInfo(User info)、 this(Current node instance)、 node(Avatar node)、 e(Event Object)</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_mouseenter（v0.9.9+）</td>
+<td>Triggered when the mouse moves over a person's avatar during collaborative editing</td>
+<td>userInfo(User info)、 this(Current node instance)、 node(Avatar node)、 e(Event Object)</td>
+</tr>
+<tr>
+<td>node_cooperate_avatar_mouseleave（v0.9.9+）</td>
+<td>Triggered when removing personnel avatars with the mouse during collaborative editing</td>
+<td>userInfo(User info)、 this(Current node instance)、 node(Avatar node)、 e(Event Object)</td>
 </tr>
 </tbody>
 </table>
@@ -1219,7 +1401,7 @@ redo. All commands are as follows:</p>
 </tr>
 <tr>
 <td>SET_NODE_DATA</td>
-<td>Update node data, that is, update the data in the data object of the node data object</td>
+<td>Update node data, that is, update the data in the data object of the node data object. Note that this command will not trigger view updates</td>
 <td>node (the node to set), data (object, the data to update, e.g. <code>{expand: true}</code>)</td>
 </tr>
 <tr>
@@ -1246,6 +1428,11 @@ redo. All commands are as follows:</p>
 <td>SET_NODE_NOTE</td>
 <td>Set Node Note</td>
 <td>node (node to set), note (note text)</td>
+</tr>
+<tr>
+<td>SET_NODE_ATTACHMENT（v0.9.10+）</td>
+<td>Set node attachment</td>
+<td>node（node to set）、url（attachment url）、name（attachment name, optional）</td>
 </tr>
 <tr>
 <td>SET_NODE_TAG</td>
@@ -1295,7 +1482,7 @@ redo. All commands are as follows:</p>
 <tr>
 <td>GO_TARGET_NODE（v0.6.7+）</td>
 <td>Navigate to a node, and if the node is collapsed, it will automatically expand to that node</td>
-<td>node（Node instance or node uid to locate）、callback（v0.6.9+, Callback function after positioning completion）</td>
+<td>node（Node instance or node uid to locate）、callback（v0.6.9+, Callback function after positioning completion, v0.9.8+receives a parameter representing the target node instance）</td>
 </tr>
 <tr>
 <td>INSERT_MULTI_NODE（v0.7.2+）</td>
@@ -1322,11 +1509,26 @@ redo. All commands are as follows:</p>
 <td>Delete only the current node, operate on the currently active node or specified node</td>
 <td>appointNodes（Optional, specify the nodes to be deleted, and multiple nodes can be passed as an array）</td>
 </tr>
+<tr>
+<td>MOVE_UP_ONE_LEVEL（v0.9.6+）</td>
+<td>Move the specified node up one level</td>
+<td>node（Optional, specify the node to move up the hierarchy, if not passed, it will be the first node in the current active node）</td>
+</tr>
+<tr>
+<td>REMOVE_CUSTOM_STYLES（v0.9.7+）</td>
+<td>One click removal of custom styles for a node</td>
+<td>node（Optional, specify the node to clear the custom style, otherwise it will be the first one in the current active node）</td>
+</tr>
+<tr>
+<td>REMOVE_ALL_NODE_CUSTOM_STYLES（v0.9.7+）</td>
+<td>One click removal of multiple nodes or custom styles for all nodes</td>
+<td>appointNodes（Optional, node instance array, specifying multiple nodes to remove custom styles from. If not passed, the custom styles of all nodes on the current canvas will be removed）</td>
+</tr>
 </tbody>
 </table>
 <h3>setData(data)</h3>
 <p>Dynamic setting of mind map data, pure node data</p>
-<p><code>data</code>: mind map structure data</p>
+<p><code>data</code>: mind map structure data. V0.9.9+ supports passing empty objects or null, and the canvas will display blank space.</p>
 <h3>setFullData(<em>data</em>)</h3>
 <blockquote>
 <p>v0.2.7+</p>

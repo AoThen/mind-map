@@ -10,7 +10,9 @@ export default {
     line: '连线',
     width: '粗细',
     style: '风格',
+    lineRadius: '圆角大小',
     lineOfOutline: '概要的连线',
+    showArrow: '是否显示箭头',
     nodePadding: '节点内边距',
     nodeMargin: '节点外边距',
     horizontal: '水平',
@@ -28,6 +30,7 @@ export default {
     watermark: '水印',
     showWatermark: '是否显示水印',
     watermarkDefaultText: '水印文字',
+    onlyExport: '是否仅在导出时显示',
     watermarkText: '水印文字',
     watermarkTextColor: '文字颜色',
     watermarkLineSpacing: '水印行间距',
@@ -55,7 +58,13 @@ export default {
     associativeLineText: '关联线文字',
     fontFamily: '字体',
     fontSize: '字号',
-    isShowScrollbar: '是否显示滚动条'
+    isShowScrollbar: '是否显示滚动条',
+    isUseHandDrawnLikeStyle: '是否开启手绘风格',
+    rootLineStartPos: '根节点连线起始位置',
+    center: '中心',
+    right: '右侧',
+    rainbowLines: '彩虹线条',
+    notUseRainbowLines: '不使用彩虹线条'
   },
   color: {
     moreColor: '更多颜色'
@@ -87,7 +96,9 @@ export default {
     fitCanvas: '适应画布',
     removeImage: '移除图片',
     removeHyperlink: '移除超链接',
-    removeNote: '移除备注'
+    removeNote: '移除备注',
+    removeCustomStyles: '一键去除自定义样式',
+    removeAllNodeCustomStyles: '一键去除所有节点自定义样式'
   },
   count: {
     words: '字数',
@@ -117,7 +128,9 @@ export default {
     paddingX: '水平内边距',
     paddingY: '垂直内边距',
     useMultiPageExport: '是否多页导出',
-    defaultFileName: '思维导图'
+    defaultFileName: '思维导图',
+    addFooterText: '底部添加文字',
+    addFooterTextPlaceholder: '比如：来自simple-mind-map'
   },
   fullscreen: {
     fullscreenShow: '全屏查看',
@@ -138,7 +151,9 @@ export default {
     openMiniMap: '开启小地图',
     closeMiniMap: '关闭小地图',
     readonly: '切换为只读模式',
-    edit: '切换为编辑模式'
+    edit: '切换为编辑模式',
+    backToRoot: '回到根节点',
+    changeSourceCodeEdit: '切换为源码编辑模式'
   },
   nodeHyperlink: {
     title: '超链接',
@@ -198,7 +213,13 @@ export default {
     line: '线条',
     nodePadding: '节点内边距',
     horizontal: '水平',
-    vertical: '垂直'
+    vertical: '垂直',
+    gradientStyle: '渐变',
+    startColor: '起始',
+    endColor: '结束',
+    arrowDir: '箭头位置',
+    arrowDirStart: '头部',
+    arrowDirEnd: '尾部'
   },
   theme: {
     title: '主题',
@@ -235,6 +256,7 @@ export default {
     associativeLine: '关联线',
     painter: '格式刷',
     formula: '公式',
+    attachment: '附件',
     more: '更多',
     selectFileTip: '请选择文件',
     notSupportTip: '你的浏览器不支持该功能，或者当前页面非https协议',
@@ -244,7 +266,8 @@ export default {
     fileContentError: '文件内容有误',
     fileOpenFailed: '文件打开失败',
     defaultFileName: '思维导图',
-    creatingTip: '正在创建文件'
+    creatingTip: '正在创建文件',
+    directory: '目录'
   },
   edit: {
     newFeatureNoticeTitle: '新特性提醒',
@@ -254,7 +277,9 @@ export default {
     splitByWrap: '是否按换行自动分割节点？',
     tip: '提示',
     yes: '是',
-    no: '否'
+    no: '否',
+    exportError: '导出失败',
+    dragTip: '在此释放以导入该文件'
   },
   mouseAction: {
     tip1: '当前：左键拖动画布，右键框选节点',
@@ -292,5 +317,19 @@ export default {
   },
   other: {
     loading: '正在加载，请稍后...'
+  },
+  sourceCodeEdit: {
+    sourceCodeTip: '富文本模式下不建议修改样式，因为需要同步修改数据及html结构。',
+    format: '格式化',
+    copy: '复制',
+    confirm: '完成',
+    close: '关闭',
+    formatErrorTip: 'JSON格式有误，请检查后再试',
+    copyTip: '已复制到剪贴板',
+    formatTip: '格式化完成'
+  },
+  attachment: {
+    deleteAttachment: '删除附件',
+    tip: '附件功能仅在客户端可用'
   }
 }

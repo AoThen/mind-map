@@ -40,6 +40,7 @@ export const defaultOpt = {
   enableFreeDrag: false,
   // 水印配置
   watermarkConfig: {
+    onlyExport: false, // 是否仅在导出时添加水印
     text: '',
     lineSpacing: 100,
     textSpacing: 100,
@@ -97,7 +98,7 @@ export const defaultOpt = {
   // 是否在点击了画布外的区域时结束节点文本的编辑状态
   isEndNodeTextEditOnClickOuter: true,
   // 最大历史记录数
-  maxHistoryCount: 1000,
+  maxHistoryCount: 500,
   // 是否一直显示节点的展开收起按钮，默认为鼠标移上去和激活时才显示
   alwaysShowExpandBtn: false,
   // 扩展节点可插入的图标
@@ -238,5 +239,84 @@ export const defaultOpt = {
   */
   createNewNodeBehavior: CONSTANTS.CREATE_NEW_NODE_BEHAVIOR.DEFAULT,
   // 当节点图片加载失败时显示的默认图片
-  defaultNodeImage: ''
+  defaultNodeImage: '',
+  // 是否将思维导图限制在画布内
+  // 比如向右拖动时，思维导图图形的最左侧到达画布中心时将无法继续向右拖动，其他同理
+  isLimitMindMapInCanvas: false,
+  // 当注册了滚动条插件（Scrollbar）时，是否将思维导图限制在画布内，isLimitMindMapInCanvas不再起作用
+  isLimitMindMapInCanvasWhenHasScrollbar: true,
+  // 在节点上粘贴剪贴板中的图片的处理方法，默认是转换为data:url数据插入到节点中，你可以通过该方法来将图片数据上传到服务器，实现保存图片的url
+  // 可以传递一个异步方法，接收Blob类型的图片数据，需要返回如下结构：
+  /*
+    {
+      url,    // 图片url
+      size: {
+        width,  // 图片的宽度
+        height  //图片的高度
+      }
+    }
+  */
+  handleNodePasteImg: null,
+  // 默认情况下，新创建的关联线两个端点的位置是根据两个节点中心点的相对位置来计算的，如果你想固定位置，可以通过这个属性来配置
+  // from和to都不传，则都自动计算，如果只传一个，另一个则会自动计算
+  associativeLineInitPointsPosition: {
+    // from和to可选值：left、top、bottom、right
+    from: '', // 关联线起始节点上端点的位置
+    to: '' // 关联线目标节点上端点的位置
+  },
+  // 是否允许调整关联线两个端点的位置
+  enableAdjustAssociativeLinePoints: true,
+  // 自定义创建节点形状的方法，可以传一个函数，均接收一个参数
+  // 矩形、圆角矩形、椭圆、圆等形状会调用该方法
+  // 接收svg path字符串，返回svg节点
+  customCreateNodePath: null,
+  // 菱形、平行四边形、八角矩形、外三角矩形、内三角矩形等形状会调用该方法
+  // 接收points数组点位，返回svg节点
+  customCreateNodePolygon: null,
+  // 自定义转换节点连线路径的方法
+  // 接收svg path字符串，返回转换后的svg path字符串
+  customTransformNodeLinePath: null,
+  // 是否仅搜索当前渲染的节点，被收起的节点不会被搜索到
+  isOnlySearchCurrentRenderNodes: false,
+  // 协同编辑时，同一个节点不能同时被多人选中
+  onlyOneEnableActiveNodeOnCooperate: false,
+  // 协同编辑时，节点操作即将更新到其他客户端前的生命周期函数
+  // 函数接收一个对象作为参数：
+  /*
+    {
+      type: createOrUpdate（创建节点或更新节点）、delete（删除节点）
+      data: 1.当type=createOrUpdate时，代表被创建或被更新的节点数据，即将同步到其他客户端，所以你可以修改该数据；2.当type=delete时，代表被删除的节点数据
+    }
+  */
+  beforeCooperateUpdate: null,
+  // 快捷键操作即将执行前的生命周期函数，返回true可以阻止操作执行
+  // 函数接收两个参数：key（快捷键）、activeNodeList（当前激活的节点列表）
+  beforeShortcutRun: null,
+  // 彩虹线条配置，需要先注册RainbowLines插件
+  rainbowLinesConfig: {
+    open: false, // 是否开启彩虹线条
+    colorsList: [] // 自定义彩虹线条的颜色列表，如果不设置，会使用默认颜色列表
+    /*
+    [
+      'rgb(255, 213, 73)',
+      'rgb(255, 136, 126)',
+      'rgb(107, 225, 141)',
+      'rgb(151, 171, 255)',
+      'rgb(129, 220, 242)',
+      'rgb(255, 163, 125)',
+      'rgb(152, 132, 234)'
+    ]
+    */
+  },
+  // 导出png、svg、pdf时在头部和尾部添加自定义内容
+  // 可传递一个函数，这个函数可以返回null代表不添加内容，也可以返回如下数据：
+  /*
+    {
+      el,// 要追加的自定义DOM节点，样式可内联
+      cssText,// 可选，如果样式不想内联，可以传递该值，一个css字符串
+      height: 50// 返回的DOM节点的高度，必须传递
+    }
+  */
+  addContentToHeader: null,
+  addContentToFooter: null
 }
