@@ -14,13 +14,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16]
-
-
+        node-version: [16,18,20,22]
+        
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@main
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
@@ -37,8 +36,8 @@ jobs:
             find $PWD -maxdepth 1 | xargs ls -ld
 
 
-    # - name: Upload a Build Artifact
-    #   uses: actions/upload-artifact@v3.1.2
-    #   with:
-    #     name: MyIP.zip
-    #     path: web/dist
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: mind-map-${{ matrix.node-version }}
+        path: web/dist
