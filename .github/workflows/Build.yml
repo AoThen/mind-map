@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Build
+name: Build web
 
 on:
   push:
@@ -28,11 +28,10 @@ jobs:
             npm link
             cd ..
             cd web
+            npm i
+            npm link simple-mind-map
             npm run build
-
-        # npm i
-        # npm link simple-mind-map
-        # npm run build
+            
         # find $PWD -maxdepth 1 | xargs ls -ld
         # cd ..
         # find $PWD -maxdepth 1 | xargs ls -ld
