@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14,16,18,20,22]
+        node-version: [14]
         
     steps:
     - uses: actions/checkout@v4
@@ -28,12 +28,14 @@ jobs:
             npm link
             cd ..
             cd web
-            npm i
-            npm link simple-mind-map
             npm run build
-            find $PWD -maxdepth 1 | xargs ls -ld
-            cd ..
-            find $PWD -maxdepth 1 | xargs ls -ld
+
+        # npm i
+        # npm link simple-mind-map
+        # npm run build
+        # find $PWD -maxdepth 1 | xargs ls -ld
+        # cd ..
+        # find $PWD -maxdepth 1 | xargs ls -ld
 
 
     - name: Upload a Build Artifact

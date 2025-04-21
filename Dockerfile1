@@ -1,0 +1,28 @@
+# 第一阶段：依赖安装与构建
+FROM node:16-alpine AS builder
+
+# 复制项目结构（含.dockerignore过滤非必要文件）
+WORKDIR /app
+COPY . .
+
+# 安装simple-mind-map依赖并构建
+WORKDIR /app/simple-mind-map
+RUN npm install --production && npm run build
+
+# 安装web依赖（通过file引用本地模块）
+WORKDIR /app/web
+RUN npm install --production
+
+# 第二阶段：最小化运行时镜像
+FROM node:16-alpine
+
+# 仅复制生产所需文件
+WORKDIR /app
+COPY --from=builder /app/simple-mind-map ./simple-mind-map
+COPY --from=builder /app/web ./web
+COPY --from=builder /app/web/node_modules ./web/node_modules
+
+# 配置环境
+WORKDIR /app/web
+EXPOSE 8080
+CMD ["npm", "run", "serve"]
