@@ -30,6 +30,7 @@ jobs:
             cd web
             npm i
             npm link simple-mind-map
+            npm run buildLibrary
             npm run build
 
         # find $PWD -maxdepth 1 | xargs ls -ld
